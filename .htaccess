@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+        RewriteEngine On
+
+        # Fix for hosting servers with mod_auth_digest disabled
+        RewriteRule .* - [E=DEVMD_AUTHORIZATION:%{HTTP:Authorization}]
+
+        RewriteBase /
+
+        # Removes index.php from ExpressionEngine URLs
+        RewriteCond %{THE_REQUEST} ^GET.*index\.php [NC]
+        RewriteCond %{REQUEST_URI} !/system/.* [NC]
+        RewriteRule (.*?)index\.php/*(.*) stlukesdev/$1$2 [R=301,NE,L]
+
+        # Directs all EE web requests through the site index file
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^(.*)$ stlukesdev/index.php/$1 [L]
+</IfModule>
